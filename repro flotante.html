@@ -1,0 +1,413 @@
+<html><head><base href="https://websim.example.com/radio-project/"></head><body>
+
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HIS RADIO - Transmisión en línea</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      display: flex;
+      justify-content: flex-end;
+      align-items: flex-start;
+      overflow: hidden;
+      position: relative;
+      font-family: 'Roboto', sans-serif;
+      background-color: #1a1a1a;
+    }
+
+    video {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: -1;
+    }
+
+    .corner-logo {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      width: 100px;
+      height: 100px;
+      z-index: 1000;
+      animation: rotateLogo 20s linear infinite;
+    }
+
+    @keyframes rotateLogo {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .radio-icon {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      font-size: 2.5em;
+      color: #FFFF00;
+      cursor: pointer;
+      transition: transform 0.3s ease;
+      z-index: 1000;
+    }
+
+    .radio-icon:hover {
+      transform: scale(1.1);
+    }
+
+    .radio-container {
+      width: 300px;
+      padding: 30px;
+      background-color: rgba(255, 255, 255, 0.1);
+      border-radius: 20px;
+      text-align: center;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      transform-origin: top right;
+      animation: floatPlayer 6s ease-in-out infinite;
+      margin: 60px 20px 0 0;
+      display: none;
+      transition: opacity 0.5s ease, transform 0.5s ease;
+      opacity: 0;
+      transform: translateY(-20px);
+    }
+
+    .radio-container.visible {
+      display: block;
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    @keyframes floatPlayer {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+
+    .radio-container h1 {
+      font-family: 'Montserrat', sans-serif;
+      color: #FFFF00;
+      font-size: 2.5em;
+      margin-bottom: 20px;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      background: linear-gradient(45deg, #FFFF00, #FF4136);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: gradientText 5s ease infinite;
+    }
+
+    @keyframes gradientText {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    .logo-container {
+      width: 200px;
+      height: 200px;
+      margin: 0 auto 20px;
+      overflow: hidden;
+      border-radius: 50%;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    }
+
+    .logo-container img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.3s ease;
+    }
+
+    .logo-container:hover img {
+      transform: scale(1.1);
+    }
+
+    .play-button-container {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+
+    .play-button {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background-color: #ff4136;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .play-button::before {
+      content: '';
+      position: absolute;
+      width: 0;
+      height: 0;
+      border-top: 20px solid transparent;
+      border-bottom: 20px solid transparent;
+      border-left: 30px solid white;
+      left: 55%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      transition: all 0.3s ease;
+    }
+
+    .play-button.active::before {
+      width: 30px;
+      height: 30px;
+      border: none;
+      background-color: white;
+      left: 50%;
+    }
+
+    .play-button:hover {
+      transform: scale(1.1);
+      box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .play-button.active {
+      background-color: #2ecc40;
+    }
+
+    .social-icons {
+      position: fixed;
+      left: 20px;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+
+    .social-icons a {
+      display: block;
+      width: 50px;
+      height: 50px;
+      margin-bottom: 15px;
+      background-color: transparent;
+      transition: transform 0.3s ease;
+    }
+
+    .social-icons img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      transition: transform 0.3s ease;
+      cursor: pointer;
+      border-radius: 50%;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .social-icons a:hover {
+      transform: scale(1.2) rotate(10deg);
+    }
+
+    .now-playing {
+      margin-top: 15px;
+      color: white;
+      font-size: 1em;
+      font-weight: bold;
+      text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+    }
+
+    .volume-control {
+      margin-top: 15px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .volume-control input {
+      width: 80%;
+      cursor: pointer;
+      -webkit-appearance: none;
+      background: linear-gradient(to right, #ff4136 0%, #ff4136 100%, #ddd 100%, #ddd 100%);
+      border-radius: 8px;
+      height: 8px;
+      outline: none;
+    }
+
+    .volume-control input::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: #ff4136;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .volume-control input::-webkit-slider-thumb:hover {
+      transform: scale(1.2);
+    }
+
+    .equalizer {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      height: 60px;
+      margin-top: 20px;
+      padding: 0 10px;
+    }
+
+    .equalizer-bar {
+      width: 8px;
+      border-radius: 4px;
+      transition: height 0.2s ease;
+    }
+
+    .equalizer-bar:nth-child(1) { background-color: #FF4136; }
+    .equalizer-bar:nth-child(2) { background-color: #FF851B; }
+    .equalizer-bar:nth-child(3) { background-color: #FFDC00; }
+    .equalizer-bar:nth-child(4) { background-color: #2ECC40; }
+    .equalizer-bar:nth-child(5) { background-color: #0074D9; }
+    .equalizer-bar:nth-child(6) { background-color: #B10DC9; }
+    .equalizer-bar:nth-child(7) { background-color: #F012BE; }
+    .equalizer-bar:nth-child(8) { background-color: #01FF70; }
+
+    @keyframes equalizerEffect {
+      0% { transform: scaleY(0.1); }
+      100% { transform: scaleY(1); }
+    }
+
+    .equalizer-bar {
+      animation: equalizerEffect 0.5s ease-in-out infinite alternate;
+    }
+  </style>
+</head>
+
+<body>
+  <video autoplay loop muted>
+    <source src="https://radioplayer.luna-universe.com/videos/home.mp4" type="video/mp4">
+    Tu navegador no soporta el elemento de video.
+  </video>
+
+  <img src="https://i.postimg.cc/HWfWbXmG/Photoroom-20240423-092102.png" alt="Logo de HIS RADIO" class="corner-logo">
+
+  <div class="radio-icon" id="radioIcon">
+    <i class="fas fa-radio"></i>
+  </div>
+
+  <div class="radio-container" id="radioContainer">
+    <div class="logo-container">
+      <img src="https://i.postimg.cc/HWfWbXmG/Photoroom-20240423-092102.png" alt="Logo de HIS RADIO">
+    </div>
+    <h1>HIS RADIO</h1>
+    <div class="play-button-container">
+      <div class="play-button" id="playButton"></div>
+    </div>
+    <div class="now-playing" id="nowPlaying">Cargando...</div>
+    <div class="volume-control">
+      <input type="range" id="volumeSlider" min="0" max="1" step="0.1" value="1">
+    </div>
+    <div class="equalizer" id="equalizer">
+      <div class="equalizer-bar"></div>
+      <div class="equalizer-bar"></div>
+      <div class="equalizer-bar"></div>
+      <div class="equalizer-bar"></div>
+      <div class="equalizer-bar"></div>
+      <div class="equalizer-bar"></div>
+      <div class="equalizer-bar"></div>
+      <div class="equalizer-bar"></div>
+    </div>
+    <audio id="audioPlayer">
+      <source src="https://stream.zeno.fm/lbrbcbmxqreuv" type="audio/mpeg">
+      Tu navegador no soporta el elemento de audio.
+    </audio>
+  </div>
+
+  <div class="social-icons">
+    <a href="https://www.facebook.com/hisradio" target="_blank"><img src="https://cdn3.iconfinder.com/data/icons/capsocial-round/500/facebook-128.png" alt="Facebook"></a>
+    <a href="https://twitter.com/hisradio" target="_blank"><img src="https://cdn3.iconfinder.com/data/icons/capsocial-round/500/twitter-128.png" alt="Twitter"></a>
+    <a href="https://youtu.be/vXq6ZUycSMo?si=zRdWzf8DiGkFahCF" target="_blank"><img src="https://cdn3.iconfinder.com/data/icons/capsocial-round/500/youtube3-128.png" alt="YouTube"></a>
+    <a href="https://www.instagram.com/hisradio" target="_blank"><img src="https://cdn3.iconfinder.com/data/icons/capsocial-round/500/instagram-128.png" alt="Instagram"></a>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
+  <script>
+    const radioIcon = document.getElementById('radioIcon');
+    const radioContainer = document.getElementById('radioContainer');
+    const playButton = document.getElementById('playButton');
+    const audioPlayer = document.getElementById('audioPlayer');
+    const volumeSlider = document.getElementById('volumeSlider');
+    const nowPlaying = document.getElementById('nowPlaying');
+    const equalizerBars = document.querySelectorAll('.equalizer-bar');
+
+    radioIcon.addEventListener('click', function() {
+      radioContainer.classList.toggle('visible');
+    });
+
+    playButton.addEventListener('click', function () {
+      playButton.classList.toggle('active');
+
+      if (audioPlayer.paused) {
+        audioPlayer.play();
+        startEqualizer();
+      } else {
+        audioPlayer.pause();
+        stopEqualizer();
+      }
+    });
+
+    volumeSlider.addEventListener('input', function() {
+      audioPlayer.volume = volumeSlider.value;
+      let percent = volumeSlider.value * 100;
+      volumeSlider.style.background = `linear-gradient(to right, #ff4136 0%, #ff4136 ${percent}%, #ddd ${percent}%, #ddd 100%)`;
+    });
+
+    function updateNowPlaying() {
+      axios.get('https://api.example.com/now-playing')
+        .then(response => {
+          nowPlaying.textContent = `Reproduciendo: ${response.data.song} - ${response.data.artist}`;
+        })
+        .catch(error => {
+          console.error('Error al obtener información de la canción:', error);
+          nowPlaying.textContent = 'Información no disponible';
+        });
+    }
+
+    setInterval(updateNowPlaying, 30000);
+    updateNowPlaying();
+
+    function animateEqualizer() {
+      equalizerBars.forEach(bar => {
+        const height = Math.floor(Math.random() * 100) + 10;
+        bar.style.height = `${height}%`;
+        bar.style.animationDuration = `${Math.random() * 0.5 + 0.2}s`;
+      });
+    }
+
+    let equalizerInterval;
+
+    function startEqualizer() {
+      equalizerInterval = setInterval(animateEqualizer, 100);
+    }
+
+    function stopEqualizer() {
+      clearInterval(equalizerInterval);
+      equalizerBars.forEach(bar => {
+        bar.style.height = '0%';
+      });
+    }
+
+    startEqualizer();
+  </script>
+</body>
+
+</html>
+
+</body></html>
